@@ -5,6 +5,7 @@ This module provides a function `canUnlockAll` that checks if all
 nested boxes can be unlocked using the keys contained within them.
 """
 
+
 def canUnlockAll(boxes):
     """Determine if all boxes can be unlocked.
 
@@ -14,24 +15,25 @@ def canUnlockAll(boxes):
     in each box.
 
     Args:
-        boxes (list of lists of int): The list of boxes with each box containing a list of key indices.
+        boxes (list of lists of int): The list of boxes with each box
+        containing a list of key indices.
 
     Returns:
         bool: True if all boxes can be unlocked, False otherwise.
     """
     if not boxes:
         return False
-    
+
     unlocked = [False] * len(boxes)
     unlocked[0] = True
     queue = [0]
-    
+
     while queue:
         box_index = queue.pop(0)
-        
+
         for key in boxes[box_index]:
             if key < len(boxes) and not unlocked[key]:
                 unlocked[key] = True
                 queue.append(key)
-    
+
     return all(unlocked)
