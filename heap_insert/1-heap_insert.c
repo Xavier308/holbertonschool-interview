@@ -3,10 +3,12 @@
 #include <stdio.h>
 
 /**
- * enqueue - Adds a node to the queue for level-order traversal.
- * @queue: Array of node pointers used for BFS traversal.
- * @node: Node to add to the queue.
- * @rear: Pointer to the rear index.
+ * enqueue - Queue management: Addition operation
+ * @queue: Queue container (array of binary tree node pointers)
+ * @node: Target node for enqueueing
+ * @rear: Position tracker for back of queue
+ *
+ * Description: Handles the insertion of new nodes into the BFS queue
  */
 void enqueue(heap_t **queue, heap_t *node, int *rear)
 {
@@ -15,11 +17,12 @@ void enqueue(heap_t **queue, heap_t *node, int *rear)
 }
 
 /**
- * dequeue - Removes a node from the queue.
- * @queue: Array of node pointers used for BFS traversal.
- * @front: Pointer to the front index.
+ * dequeue - Queue management: Removal operation
+ * @queue: Queue container storing tree nodes
+ * @front: Position tracker for front of queue
  *
- * Return: The dequeued node.
+ * Return: Returns node at queue front
+ * Description: Extracts and returns the next node in queue sequence
  */
 heap_t *dequeue(heap_t **queue, int *front)
 {
@@ -28,10 +31,12 @@ heap_t *dequeue(heap_t **queue, int *front)
 }
 
 /**
- * heapify_up - Maintains the Max Heap property by swapping as needed.
- * @node: Pointer to the newly inserted node.
+ * heapify_up - Max Heap Property Maintainer
+ * @node: Entry point node for upward propagation
  *
- * Return: Pointer to the final position of the inserted node.
+ * Return: Final resting position of processed node
+ * Description: Bubble-up operation to restore heap ordering after insertion.
+ *
  */
 heap_t *heapify_up(heap_t *node)
 {
@@ -51,33 +56,37 @@ heap_t *heapify_up(heap_t *node)
 }
 
 /**
- * heap_insert - Inserts a value into a Max Binary Heap.
- * @root: Double pointer to the root node.
- * @value: Value to insert.
+ * heap_insert - Max Binary Heap Insertion Handler
+ * @root: Access point to heap structure
+ * @value: Data to be incorporated into heap
  *
- * Return: Pointer to the inserted node, or NULL on failure.
+ * Return: Location of newly created node, NULL if operation fails
+ * Description: Master function orchestrating the complete insertion process:
+ *             1. Finds appropriate insertion point via level-order traversal
+ *             2. Creates new node at target location
+ *             3. Ensures max-heap property post-insertion
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
 	heap_t *new_node, *temp;
-	heap_t *queue[1024]; /* Simple queue for level-order traversal */
+	heap_t *queue[1024]; /* BFS queue implementation */
 	int front = 0, rear = 0;
 
 	if (!root)
 		return (NULL);
 
-	/* If heap is empty, create root */
+	/* Root initialization for empty heap */
 	if (!*root)
 		return (*root = binary_tree_node(NULL, value));
 
-	/* Level-order traversal to find insertion point */
+	/* Systematic level-by-level traversal */
 	enqueue(queue, *root, &rear);
 
 	while (front < rear)
 	{
 		temp = dequeue(queue, &front);
 
-		/* Insert in first available left or right child */
+		/* Target location identification and node placement */
 		if (!temp->left)
 		{
 			temp->left = binary_tree_node(temp, value);
@@ -97,6 +106,6 @@ heap_t *heap_insert(heap_t **root, int value)
 		enqueue(queue, temp->right, &rear);
 	}
 
-	/* Restore the Max Heap property */
+	/* Max-heap property restoration phase */
 	return (heapify_up(new_node));
 }
