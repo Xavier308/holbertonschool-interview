@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 """
-This module defines a function to compute the minimum number of operations 
-required to produce exactly `n` 'H' characters in a text file, starting with a single 'H'.
+This module defines a function to compute the minimum number of operations
+required to produce exactly `n` 'H' characters in a text file, starting with
+a single 'H'.
 
 Allowed operations:
 1. Copy All: Copies the entire content currently in the file.
 2. Paste: Appends the previously copied content to the file.
 
-The `minOperations` function calculates the minimum number of operations 
+The `minOperations` function calculates the minimum number of operations
 needed using an approach based on prime factorization.
 
 Functions:
@@ -23,7 +24,7 @@ def minOperations(n):
         n (int): The target number of 'H' characters.
 
     Returns:
-        int: The total minimum number of operations needed, 
+        int: The total minimum number of operations needed,
         or 0 if it is not possible to achieve n.
     """
     if n <= 1:
