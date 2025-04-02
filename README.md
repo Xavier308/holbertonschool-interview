@@ -3,6 +3,9 @@
 ---
 ## 👨‍💻 About the Developer  
 Hi, I'm **Xavier**, a software developer focusing on **algorithms, data structures, and technical interview preparation**. This repository documents my journey through various **algorithmic challenges** designed to sharpen my coding skills and prepare for technical interviews.  
+
+<br>
+
 📌 **Connect with me on** [GitHub](https://github.com/Xavier308)  
 ---
 ## 📜 Project Overview  
