@@ -1,15 +1,63 @@
 # Sandpiles
 
-Requirements
-General
-Allowed editors: vi, vim, emacs
-All your files will be compiled on Ubuntu 14.04 LTS
-Your programs and functions will be compiled with gcc 4.8.4 using the flags -Wall -Werror -Wextra and -pedantic
-All your files should end with a new line
-Your code should use the Betty style. It will be checked using betty-style.pl and betty-doc.pl
-You are not allowed to use global variables
-No more than 5 functions per file
-In the following examples, the main.c files are shown as examples. You can use them to test your functions, but you don’t have to push them to your repo (if you do we won’t take them into account). We will use our own main.c files at compilation. Our main.c files might be different from the one shown in the examples
-The prototypes of all your functions should be included in your header file called sandpiles.h
-Don’t forget to push your header file
-All your header files should be include guarded
+## Overview
+This project implements the Abelian sandpile model, a mathematical model that demonstrates self-organized criticality. It focuses on computing the sum of two sandpiles while maintaining stability according to specific toppling rules.
+
+## The Sandpile Model
+The Abelian sandpile model works on a grid where each cell contains a number of "sand grains":
+- A cell is stable if it contains 3 or fewer grains
+- A cell topples when it has more than 3 grains
+- During toppling, 4 grains are removed from the cell and 1 grain is added to each of its 4 adjacent neighbors
+
+## Algorithm Insights
+
+### Toppling Process
+1. Add the two input grids cell by cell
+2. Check if the resulting grid is stable (no cell > 3)
+3. If unstable:
+   - Print the current grid
+   - Create a temporary grid to track which cells will topple
+   - For each cell with > 3 grains, distribute grains to neighbors
+   - Repeat until stability is achieved
+
+### Key Challenges
+- **Concurrent Toppling**: Toppling must occur simultaneously across all unstable cells in each round
+- **Border Conditions**: Grains that would fall off the edge of the grid are lost
+- **Convergence**: Need to ensure the process eventually stabilizes
+
+### Time & Space Complexity
+- **Time complexity**: O(n * m) where n is the number of cells and m is the number of toppling rounds required
+- **Space complexity**: O(1) since we're working with fixed-size 3x3 grids
+
+## Implementation Notes
+- Fixed 3x3 grid implementation
+- No dynamic memory allocation allowed
+- Grid must be printed before each toppling round if unstable
+
+## Example
+```
+Initial grids:
+3 3 3   1 3 1
+3 3 3 + 3 3 3
+3 3 3   1 3 1
+
+After addition:
+4 6 4
+6 6 6
+4 6 4
+
+After first toppling:
+2 5 2
+5 6 5
+2 5 2
+
+... (more toppling rounds)
+
+Final stable grid:
+2 2 2
+2 2 2
+2 2 2
+```
+
+## Resources
+- [Sandpiles - Numberphile](https://www.youtube.com/watch?v=1MtEUErz7Gg) - Video explanation of the concept
