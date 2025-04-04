@@ -23,7 +23,7 @@ return (node);
 }
 
 /**
- * sorted_array_to_avl_helper: Recursively constructs a balanced AVL subtree.
+ * sorted_array_to_avl_helper - Constructs a balanced AVL subtree.
  * @array: Sorted array of integers.
  * @start: Starting index of the subarray to convert.
  * @end: Ending index of the subarray to convert.
