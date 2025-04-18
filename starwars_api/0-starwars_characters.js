@@ -17,14 +17,13 @@ const filmUrl = `https://swapi.dev/api/films/${movieId}/`;
 
 // Options for the request, disabling strict SSL checking
 const requestOptions = {
-  url: filmUrl,
-  strictSSL: false // Add this line
+  url: filmUrl, // Cannot use shorthand here as key 'url' != variable 'filmUrl'
+  strictSSL: false
 };
 
 // First request: Get the film details
 request(requestOptions, (error, response, body) => { // Pass options object
   if (error) {
-    // Check specifically for the cert error if needed, but general error handling is fine
     console.error('Error fetching film data:', error);
     process.exit(1);
   }
@@ -54,8 +53,8 @@ request(requestOptions, (error, response, body) => { // Pass options object
     // Function to fetch and store character name
     const fetchCharacter = (url, index) => {
       const charRequestOptions = { // Options for character requests
-        url: url,
-        strictSSL: false // Add this line here too
+        url, // Fixed: Use object property shorthand here
+        strictSSL: false
       };
       request(charRequestOptions, (charError, charResponse, charBody) => { // Pass options object
         if (!charError && charResponse.statusCode === 200) {
@@ -96,4 +95,4 @@ request(requestOptions, (error, response, body) => { // Pass options object
     console.error('Error parsing film JSON response:', parseError);
     process.exit(1);
   }
-});
+}); // <-- Make sure there is a newline character after this line in the file
