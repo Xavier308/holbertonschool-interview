@@ -1,17 +1,50 @@
-#Star Wars API
+# Star Wars API
+
+A Node.js script that interacts with the Star Wars API (SWAPI) to print all characters from a specific Star Wars movie.
 
 ## Description
 
-Requirements
+This project contains a script that takes a Star Wars movie ID as a command-line argument and prints all characters that appear in that movie. The characters are printed in the same order as they appear in the API's `/films/` endpoint.
 
-General
+## Requirements
 
-Allowed editors: vi, vim, emacs
-All your files will be interpreted on Ubuntu 14.04 LTS using node (version 10.14.x)
-All your files should end with a new line
-The first line of all your files should be exactly #!/usr/bin/node
-A README.md file, at the root of the folder of the project, is mandatory
-Your code should be semistandard compliant. Rules of Standard + semicolons on top. Also as reference: AirBnB style
-All your files must be executable
-The length of your files will be tested using wc
-You are not allowed to use var
+- Node.js (version 10.14.x)
+- Request module
+
+## Installation
+
+1. Install Node.js 10:
+```
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+2. Install the request module:
+```
+sudo npm install request --global
+export NODE_PATH=/usr/lib/node_modules
+```
+
+3. Install semistandard for code style:
+```
+sudo npm install semistandard --global
+```
+
+## Usage
+
+Run the script with a Star Wars movie ID as an argument:
+
+```
+./0-starwars_characters.js <Movie ID>
+```
+
+Example:
+```
+./0-starwars_characters.js 3
+```
+
+This will print all characters from "Return of the Jedi" (Movie ID 3).
+
+## File Description
+
+- `0-starwars_characters.js`: Script that fetches and prints Star Wars character names for a given movie ID.
