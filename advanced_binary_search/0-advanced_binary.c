@@ -11,7 +11,8 @@
  *
  * Return: Index of the first occurrence of value, or -1 if not found
  */
-static int binary_search_recursive(int *array, size_t left, size_t right, int value)
+static int binary_search_recursive(int *array, size_t left,
+	size_t right, int value)
 {
 	size_t mid, i;
 
