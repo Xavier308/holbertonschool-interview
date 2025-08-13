@@ -3,181 +3,92 @@
 #include "substring.h"
 
 /**
- * check_word_match - Check if extracted word matches any in words array
- * @word: The word to check
- * @words: Array of words
- * @nb_words: Number of words
- * @word_counts: Array to store word counts
+ * match_at_index - checks if substring starting at index matches all words
+ * @s: the string to check
+ * @start: index in s to start checking
+ * @words: list of words
+ * @nb_words: number of words
+ * @word_len: length of each word
  *
- * Return: 1 if word found and counted, 0 otherwise
+ * Return: 1 if match found, 0 otherwise
  */
-static int check_word_match(char *word, char const **words,
-			    int nb_words, int *word_counts)
+static int match_at_index(char const *s, int start,
+			  char const **words, int nb_words, int word_len)
 {
-	int j;
+	int *used, i, j, matched = 1;
 
-	for (j = 0; j < nb_words; j++)
-	{
-		if (strcmp(word, words[j]) == 0)
-		{
-			word_counts[j]++;
-			return (1);
-		}
-	}
-	return (0);
-}
-
-/**
- * validate_word_counts - Check if each word appears exactly once
- * @word_counts: Array of word counts
- * @nb_words: Number of words
- *
- * Return: 1 if all counts are 1, 0 otherwise
- */
-static int validate_word_counts(int *word_counts, int nb_words)
-{
-	int i;
-
-	for (i = 0; i < nb_words; i++)
-	{
-		if (word_counts[i] != 1)
-			return (0);
-	}
-	return (1);
-}
-
-/**
- * check_concatenation - Check if substring is valid concatenation
- * @s: The string to check
- * @pos: Starting position
- * @words: Array of words
- * @nb_words: Number of words
- * @word_len: Length of each word
- * @word_counts: Array to store counts
- *
- * Return: 1 if valid, 0 otherwise
- */
-static int check_concatenation(char const *s, int pos, char const **words,
-			       int nb_words, int word_len, int *word_counts)
-{
-	int i, len = strlen(s);
-	char *current_word;
-
-	for (i = 0; i < nb_words; i++)
-		word_counts[i] = 0;
-
-	if (pos + nb_words * word_len > len)
+	used = calloc(nb_words, sizeof(int));
+	if (!used)
 		return (0);
 
 	for (i = 0; i < nb_words; i++)
 	{
-		current_word = malloc(word_len + 1);
-		if (!current_word)
-			return (0);
+		const char *chunk = s + start + i * word_len;
+		int found = 0;
 
-		strncpy(current_word, s + pos + i * word_len, word_len);
-		current_word[word_len] = '\0';
-
-		if (!check_word_match(current_word, words, nb_words, word_counts))
+		for (j = 0; j < nb_words; j++)
 		{
-			free(current_word);
-			return (0);
+			if (!used[j] && strncmp(chunk, words[j], word_len) == 0)
+			{
+				used[j] = 1;
+				found = 1;
+				break;
+			}
 		}
-		free(current_word);
+		if (!found)
+		{
+			matched = 0;
+			break;
+		}
 	}
-	return (validate_word_counts(word_counts, nb_words));
+
+	free(used);
+	return (matched);
 }
 
 /**
- * add_result - Add index to result array, expanding if needed
- * @result: Pointer to result array
- * @capacity: Pointer to capacity
- * @size: Current size
- * @index: Index to add
+ * find_substring - finds all starting indices of substrings in `s`
+ *                  that are concatenations of all words in `words`
+ * @s: the main string to scan
+ * @words: array of words to concatenate
+ * @nb_words: number of words
+ * @n: pointer to store number of indices found
  *
- * Return: Updated result array, or NULL on failure
+ * Return: allocated array of starting indices or NULL if none found
  */
-static int *add_result(int **result, int *capacity, int size, int index)
+int *find_substring(char const *s, char const **words,
+		    int nb_words, int *n)
 {
-	if (size >= *capacity)
-	{
-		*capacity *= 2;
-		*result = realloc(*result, *capacity * sizeof(int));
-		if (!*result)
-			return (NULL);
-	}
-	(*result)[size] = index;
-	return (*result);
-}
-
-/**
- * allocate_arrays - Allocate memory for word counts and result arrays
- * @nb_words: Number of words
- * @word_counts: Pointer to word counts array
- * @result: Pointer to result array
- * @capacity: Initial capacity for result array
- *
- * Return: 1 on success, 0 on failure
- */
-static int allocate_arrays(int nb_words, int **word_counts,
-			   int **result, int capacity)
-{
-	*word_counts = malloc(nb_words * sizeof(int));
-	*result = malloc(capacity * sizeof(int));
-	if (!*word_counts || !*result)
-	{
-		free(*word_counts);
-		free(*result);
-		return (0);
-	}
-	return (1);
-}
-
-/**
- * find_substring - Find all substrings that are concatenations of given words
- * @s: The string to scan
- * @words: Array of words to concatenate
- * @nb_words: Number of words in the array
- * @n: Pointer to store the number of results
- *
- * Return: Array of indices where valid substrings start, or NULL if none found
- */
-int *find_substring(char const *s, char const **words, int nb_words, int *n)
-{
-	int *result = NULL, *word_counts;
-	int i, len, word_len, result_size = 0, result_capacity = 10;
+	int s_len, word_len, total_len;
+	int *indices, count = 0, i;
 
 	*n = 0;
 	if (!s || !words || nb_words == 0)
 		return (NULL);
 
-	len = strlen(s);
+	s_len = strlen(s);
 	word_len = strlen(words[0]);
-	if (len < nb_words * word_len)
+	total_len = word_len * nb_words;
+
+	if (s_len < total_len)
 		return (NULL);
 
-	if (!allocate_arrays(nb_words, &word_counts, &result, result_capacity))
+	indices = malloc(s_len * sizeof(int));
+	if (!indices)
 		return (NULL);
 
-	for (i = 0; i <= len - nb_words * word_len; i++)
+	for (i = 0; i <= s_len - total_len; i++)
 	{
-		if (check_concatenation(s, i, words, nb_words, word_len, word_counts))
-		{
-			if (!add_result(&result, &result_capacity, result_size, i))
-			{
-				free(word_counts);
-				return (NULL);
-			}
-			result_size++;
-		}
+		if (match_at_index(s, i, words, nb_words, word_len))
+			indices[count++] = i;
 	}
 
-	free(word_counts);
-	if (result_size == 0)
+	if (count == 0)
 	{
-		free(result);
+		free(indices);
 		return (NULL);
 	}
-	*n = result_size;
-	return (result);
+
+	*n = count;
+	return (indices);
 }
